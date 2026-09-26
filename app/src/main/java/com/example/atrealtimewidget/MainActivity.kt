@@ -22,20 +22,16 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        super.onCreate(savedInstanceState) //605-b9605c8e
         lifecycleScope.launch (Dispatchers.IO) {
             try {
-                val retrofit = Retrofit.Builder()
-                    .baseUrl("https://api.at.govt.nz/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
-
-                val service = retrofit.create(AtApiService::class.java)
-                val result = service.getStop("605-b9605c8e", BuildConfig.AT_API_KEY)
-
-                Log.d("NetworkTest", "Success! Stop name: ${result.data.attributes.stopName}")
+                val stop = AtApiClient.service.getStop(
+                    stopId = "605-b9605c8e", // TODO: replace with a real AT stop ID
+                    apiKey = BuildConfig.AT_API_KEY
+                )
+                Log.d("AtApi", "Parsed stop: $stop")
             } catch (e: Exception) {
-                Log.e("NetworkTest", "Failed: ${e.message}")
+                Log.e("AtApi", "Failed: ${e.message}")
             }
         }
         enableEdgeToEdge()
