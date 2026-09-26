@@ -14,11 +14,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.atrealtimewidget.ui.theme.ATRealtimeWidgetTheme
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
-import java.net.URL
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
