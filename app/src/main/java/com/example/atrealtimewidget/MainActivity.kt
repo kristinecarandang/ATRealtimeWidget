@@ -12,10 +12,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.atrealtimewidget.ui.theme.ATRealtimeWidgetTheme
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import java.net.URL
+import android.util.Log
+import kotlinx.coroutines.Dispatchers
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        lifecycleScope.launch (Dispatchers.IO) {
+            try {
+                val result = URL("https://example.com").readText()
+                Log.d("NetworkTest", "Success! First 100 chars: ${result.take(100)}")
+            } catch (e: Exception) {
+                Log.e("NetworkTest", "Failed: ${e.message}")
+            }
+        }
         enableEdgeToEdge()
         setContent {
             ATRealtimeWidgetTheme {
