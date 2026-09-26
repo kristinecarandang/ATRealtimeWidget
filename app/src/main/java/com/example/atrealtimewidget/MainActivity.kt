@@ -14,19 +14,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.atrealtimewidget.ui.theme.ATRealtimeWidgetTheme
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
-import java.net.URL
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        super.onCreate(savedInstanceState) //605-b9605c8e
         lifecycleScope.launch (Dispatchers.IO) {
             try {
-                val result = URL("https://example.com").readText()
-                Log.d("NetworkTest", "Success! First 100 chars: ${result.take(100)}")
+                val stop = AtApiClient.service.getStop(
+                    stopId = "605-b9605c8e", // TODO: replace with a real AT stop ID
+                    apiKey = BuildConfig.AT_API_KEY
+                )
+                Log.d("AtApi", "Parsed stop: $stop")
             } catch (e: Exception) {
-                Log.e("NetworkTest", "Failed: ${e.message}")
+                Log.e("AtApi", "Failed: ${e.message}")
             }
         }
         enableEdgeToEdge()
