@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
                 val service = retrofit.create(AtApiService::class.java)
                 val result = service.getStop("605-b9605c8e", BuildConfig.AT_API_KEY)
 
-                Log.d("NetworkTest", "Success! Result: $result")
+                Log.d("NetworkTest", "Success! Stop name: ${result.data.attributes.stopName}")
             } catch (e: Exception) {
                 Log.e("NetworkTest", "Failed: ${e.message}")
             }
