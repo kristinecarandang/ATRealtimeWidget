@@ -17,14 +17,23 @@ import kotlinx.coroutines.launch
 import java.net.URL
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lifecycleScope.launch (Dispatchers.IO) {
             try {
-                val result = URL("https://example.com").readText()
-                Log.d("NetworkTest", "Success! First 100 chars: ${result.take(100)}")
+                val retrofit = Retrofit.Builder()
+                    .baseUrl("https://api.at.govt.nz/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+
+                val service = retrofit.create(AtApiService::class.java)
+                val result = service.getStop("605-b9605c8e", BuildConfig.AT_API_KEY)
+
+                Log.d("NetworkTest", "Success! Result: $result")
             } catch (e: Exception) {
                 Log.e("NetworkTest", "Failed: ${e.message}")
             }
