@@ -27,6 +27,21 @@ class MainActivity : ComponentActivity() {
                     apiKey = BuildConfig.AT_API_KEY
                 )
                 Log.d("AtApi", "Parsed stop: $stop")
+                val now = java.util.Calendar.getInstance()
+                val today = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).format(now.time)
+                val hour = now.get(java.util.Calendar.HOUR_OF_DAY)
+
+                val trips = AtApiClient.service.getStopTrips(
+                    stopId = "9503-bcf68071", // Onehunga platform, from the sample response
+                    date = today,
+                    startHour = hour,
+                    hourRange = 2,
+                    apiKey = BuildConfig.AT_API_KEY
+                )
+
+                nextDepartures(trips.data, 5).forEach {
+                    Log.d("AtApi", "Departs ${it.departureTime} to ${it.stopHeadsign} (trip ${it.tripId})")
+                }
             } catch (e: Exception) {
                 Log.e("AtApi", "Failed: ${e.message}")
             }
