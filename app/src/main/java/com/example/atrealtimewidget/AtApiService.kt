@@ -21,6 +21,11 @@ interface AtApiService {
         @Header("Ocp-Apim-Subscription-Key") apiKey: String
     ): StopTripsResponse
 
+    @GET("realtime/legacy/tripupdates")
+    suspend fun getTripUpdates(
+        @Query("tripid", encoded = true) tripIds: String,
+        @Header("Ocp-Apim-Subscription-Key") apiKey: String
+    ): TripUpdatesResponse
 }
 
 data class StopAttributes(
@@ -62,3 +67,26 @@ data class StopTripAttributes(
     @SerializedName("trip_headsign") val tripHeadsign: String?,
     @SerializedName("trip_id") val tripId: String
 )
+
+data class TripUpdatesResponse(val response: TripUpdatesBody?)
+
+data class TripUpdatesBody(val entity: List<TripUpdateEntity>?)
+
+data class TripUpdateEntity(
+    @SerializedName("trip_update") val tripUpdate: TripUpdate?
+)
+
+data class TripUpdate(
+    val trip: TripInfo,
+    val delay: Int?,
+    @SerializedName("stop_time_update") val stopTimeUpdate: StopTimeUpdate?
+)
+
+data class TripInfo(
+    @SerializedName("trip_id") val tripId: String,
+    @SerializedName("schedule_relationship") val scheduleRelationship: Int?
+)
+
+data class StopTimeUpdate(val departure: StopTimeEvent?)
+
+data class StopTimeEvent(val delay: Int?)
