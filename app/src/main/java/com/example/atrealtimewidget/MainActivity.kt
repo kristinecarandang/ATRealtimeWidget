@@ -39,6 +39,8 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+// Temporary catch-all: task 10 replaces this with specific, tested error handling.
+@Suppress("TooGenericExceptionCaught")
 private suspend fun loadDepartures(stopId: String) {
     var step = "station lookup"
     try {
