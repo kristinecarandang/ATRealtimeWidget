@@ -1,0 +1,31 @@
+name: PR checks
+
+# Runs every time a pull request is opened or updated against main
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-and-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 25
+
+      - name: Set up Gradle (with caching to speed up runs)
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Make the Gradle script runnable
+        run: chmod +x ./gradlew
+
+      - name: Run unit tests
+        run: ./gradlew testDebugUnitTest
+
+      - name: Run Android lint
+        run: ./gradlew lintDebug
