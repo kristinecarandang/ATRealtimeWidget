@@ -3,12 +3,18 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.detekt)
 }
 
 android {
     namespace = "com.example.atrealtimewidget"
     compileSdk {
         version = release(37)
+    }
+
+    detekt {
+        buildUponDefaultConfig = true
+        config.setFrom(rootProject.file("config/detekt/detekt.yml"))
     }
 
     defaultConfig {
