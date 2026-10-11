@@ -1,5 +1,7 @@
 package com.example.atrealtimewidget
 
+private const val SECONDS_PER_MINUTE = 60
+
 data class LiveStatus(val cancelled: Boolean, val delaySeconds: Int?)
 
 fun liveStatusByTrip(response: TripUpdatesResponse): Map<String, LiveStatus> =
@@ -16,7 +18,7 @@ fun describe(status: LiveStatus?): String = when {
     status == null -> "scheduled (no live data)"
     status.cancelled -> "CANCELLED"
     status.delaySeconds == null -> "scheduled (no live data)"
-    status.delaySeconds >= 60 -> "${status.delaySeconds / 60} min late"
-    status.delaySeconds <= -60 -> "${-status.delaySeconds / 60} min early"
+    status.delaySeconds >= SECONDS_PER_MINUTE -> "${status.delaySeconds / SECONDS_PER_MINUTE} min late"
+    status.delaySeconds <= -SECONDS_PER_MINUTE -> "${-status.delaySeconds / SECONDS_PER_MINUTE} min early"
     else -> "on time"
 }
