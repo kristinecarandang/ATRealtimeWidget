@@ -64,3 +64,12 @@ These are the checks CI runs on every PR to `main` (`.github/workflows/pr-checks
   `AtApiServiceTest`.
 - Instrumented tests (`app/src/androidTest/`) contain only the template.
 - When adding logic, keep it in pure top-level functions with a matching unit test.
+
+## How to work with me
+- I'm not an app developer. Explain things simply, in plain English.
+- Always show me the code and wait for my "yes" before committing anything.
+- One new branch per feature. A feature's unit tests go on the same branch
+  as a separate commit.
+- Read a file before suggesting changes to it. Only open the files needed.
+- Don't run the Gradle commands. I run them myself and paste in only the
+  error if one fails.
