@@ -5,7 +5,7 @@ import java.util.Calendar
 
 private const val TAG = "AtApi"
 private const val DEPARTURES_TO_SHOW = 3
-private const val HOUR_RANGE = 2
+private const val HOUR_RANGE = 3
 
 // Everything the screen needs: the station name and the next few departures.
 data class DepartureBoard(val stopName: String, val rows: List<DepartureRow>)
@@ -22,7 +22,8 @@ suspend fun loadDepartureBoard(stopId: String): DepartureBoard? {
         )
 
         step = "stop trips"
-        val query = serviceQueryFor(Calendar.getInstance())
+        val now = Calendar.getInstance()
+        val query = serviceQueryFor(now)
         val trips = AtApiClient.service.getStopTrips(
             stopId = stopId,
             date = query.date,
@@ -30,7 +31,7 @@ suspend fun loadDepartureBoard(stopId: String): DepartureBoard? {
             hourRange = HOUR_RANGE,
             apiKey = BuildConfig.AT_API_KEY
         )
-        val next = nextDepartures(trips.data, DEPARTURES_TO_SHOW)
+        val next = nextDepartures(trips.data, serviceSecondsOf(now), DEPARTURES_TO_SHOW)
 
         step = "live trip updates"
         val live = if (next.isEmpty()) emptyMap() else liveStatusByTrip(
