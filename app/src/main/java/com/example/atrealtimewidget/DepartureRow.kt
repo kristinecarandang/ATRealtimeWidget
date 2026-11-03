@@ -4,15 +4,24 @@ import java.util.Locale
 
 private const val HOURS_PER_DAY = 24
 
-// One line on the departure screen.
-data class DepartureRow(val time: String, val destination: String, val status: String)
+// One line on the departure screen. platform is null when the stop has no platform number.
+data class DepartureRow(
+    val time: String,
+    val destination: String,
+    val status: String,
+    val platform: String? = null
+)
 
-fun toDepartureRow(trip: StopTripAttributes, live: LiveStatus?): DepartureRow =
+fun toDepartureRow(trip: StopTripAttributes, live: LiveStatus?, platform: String? = null): DepartureRow =
     DepartureRow(
         time = displayTime(trip.departureTime),
         destination = trip.stopHeadsign ?: trip.tripHeadsign ?: "Unknown destination",
-        status = describe(live)
+        status = describe(live),
+        platform = platform
     )
+
+// "1" -> "Pl. 1". No platform -> empty text, so the column stays blank.
+fun platformLabel(platform: String?): String = if (platform == null) "" else "Pl. $platform"
 
 // AT times for trains after midnight run past 24:00 (e.g. "24:07:00").
 // For display, we wrap them back to the normal clock, so that becomes "00:07".
