@@ -36,7 +36,9 @@ data class StopAttributes(
     @SerializedName("stop_lon") val stopLon: Double,
     @SerializedName("stop_name") val stopName: String,
     @SerializedName("vehicle_type") val vehicleType: Double,
-    @SerializedName("wheelchair_boarding") val wheelchairBoarding: Double
+    @SerializedName("wheelchair_boarding") val wheelchairBoarding: Double,
+    // AT leaves this out when the stop has no platform number.
+    @SerializedName("platform_code") val platformCode: String? = null
 )
 data class StopResponse(
     val data: StopData
@@ -65,7 +67,9 @@ data class StopTripAttributes(
     @SerializedName("route_id") val routeId: String,
     @SerializedName("stop_headsign") val stopHeadsign: String?,
     @SerializedName("trip_headsign") val tripHeadsign: String?,
-    @SerializedName("trip_id") val tripId: String
+    @SerializedName("trip_id") val tripId: String,
+    // The exact stop the departure leaves from. At a station this is the platform's ID.
+    @SerializedName("stop_id") val stopId: String? = null
 )
 
 data class TripUpdatesResponse(val response: TripUpdatesBody?)

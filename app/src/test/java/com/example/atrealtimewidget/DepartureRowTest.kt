@@ -1,6 +1,7 @@
 package com.example.atrealtimewidget
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Test
 
 class DepartureRowTest {
@@ -66,5 +67,27 @@ class DepartureRowTest {
     fun toDepartureRow_noLiveData_saysScheduled() {
         val row = toDepartureRow(trip(), null)
         assertEquals("scheduled (no live data)", row.status)
+    }
+
+    @Test
+    fun toDepartureRow_withPlatform_keepsIt() {
+        val row = toDepartureRow(trip(), null, "1")
+        assertEquals("1", row.platform)
+    }
+
+    @Test
+    fun toDepartureRow_noPlatform_isNull() {
+        val row = toDepartureRow(trip(), null, null)
+        assertNull(row.platform)
+    }
+
+    @Test
+    fun platformLabel_withPlatform_saysPl() {
+        assertEquals("Pl. 1", platformLabel("1"))
+    }
+
+    @Test
+    fun platformLabel_noPlatform_isEmpty() {
+        assertEquals("", platformLabel(null))
     }
 }
