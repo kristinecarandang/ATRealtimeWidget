@@ -1,6 +1,6 @@
 # Handoff: what's done and what's next
 
-Last updated: 2026-11-04 (after PR #12, bus stops)
+Last updated: 2026-11-04 (after PR #14, lint tidy-up)
 
 ## Done
 
@@ -17,24 +17,28 @@ Last updated: 2026-11-04 (after PR #12, bus stops)
 | #10 | Hide departures that have already left |
 | #11 | Platform info: train rows show "Pl. 1" in a right-hand column |
 | #12 | Bus stops: bus rows show the route number after the time (e.g. `08:14   38   ONEHUNGA   on time`). Train rows are unchanged. |
+| #13 | Handoff notes (this file) and `CLAUDE.md` updated for platforms and bus stops |
+| #14 | Lint tidy-up: removed unused template colours and the repeated activity label, moved the Retrofit version into `libs.versions.toml` (no upgrades). Lint went from 16 warnings to 6. |
 
 ## Next steps (suggested order)
 
-1. **Lint tidy-up** (small, optional). Remove the unused template colours in
-   `res/values/colors.xml`, remove the repeated `android:label` on the activity in
-   `AndroidManifest.xml`, and move the Retrofit versions from `app/build.gradle.kts`
-   into `gradle/libs.versions.toml`. Don't upgrade any versions as part of this.
-2. **Task 10: error handling.** Replace the temporary catch-all in
+1. **Task 10: error handling.** Replace the temporary catch-all in
    `DepartureRepository.kt` with specific errors (no internet, AT server error, etc.)
    and add an error state to the screen.
-3. **Keep the screen when the phone rotates.** UI state currently lives in
+2. **Keep the screen when the phone rotates.** UI state currently lives in
    `remember { mutableStateOf(...) }` in `MainActivity.kt`, so a rotation reloads it.
-4. **Stop picker.** Let the user choose the stop instead of the hard-coded
+3. **Stop picker.** Let the user choose the stop instead of the hard-coded
    `DEFAULT_STOP_ID`.
-5. **Home screen widget (Glance).** The widget the project is named after.
+4. **Home screen widget (Glance).** The widget the project is named after.
 
-Version upgrades (Gradle, Compose, Kotlin, Retrofit 3) are flagged by lint but are
-optional. Each one would need its own branch.
+Optional, any time:
+
+- **`app/build.gradle.kts` tidy-up.** `buildFeatures { }` appears twice, and there's an
+  `android { }` block inside the main `android { }` block (around the `AT_API_KEY`
+  setup). Both work as they are and lint doesn't flag them. Take care not to break the
+  API key setup, and run the app afterwards to check it still loads departures.
+- **Version upgrades** (Gradle, Compose, Kotlin, Retrofit 3) are flagged by lint but are
+  optional. Each one would need its own branch. Keep AGP at 9.4.1.
 
 ## Things to remember
 
@@ -46,5 +50,6 @@ optional. Each one would need its own branch.
 - Never print or commit `AT_API_KEY`.
 - Before every push, run these one at a time; all must say BUILD SUCCESSFUL:
   `./gradlew detekt`, `./gradlew testDebugUnitTest`, `./gradlew lintDebug`.
-- Lint currently shows 16 old warnings (versions, unused colours, etc.) and 0 errors.
-  A new warning in a file you changed is worth a look.
+- Lint currently shows 0 errors and 6 warnings, all "a newer version is available"
+  (Gradle, AGP, Compose, Kotlin, Retrofit, Retrofit Gson converter). Any other new
+  warning is worth a look.
