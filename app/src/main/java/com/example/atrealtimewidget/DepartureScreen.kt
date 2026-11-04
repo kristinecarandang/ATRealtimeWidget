@@ -39,7 +39,7 @@ private fun DepartureList(board: DepartureBoard) {
         board.rows.forEach { row ->
             Row(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "${row.time}   ${row.destination}   ${row.status}",
+                    text = departureText(row),
                     modifier = Modifier.weight(1f)
                 )
                 // Fixed width, even when empty, so the platforms line up.
@@ -65,6 +65,25 @@ fun DepartureScreenPreview() {
                         DepartureRow("14:37", "Henderson via Grafton", "2 min late", "1"),
                         DepartureRow("14:52", "Henderson via Grafton", "on time", "1"),
                         DepartureRow("15:07", "Henderson via Grafton", "scheduled (no live data)")
+                    )
+                )
+            )
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DepartureScreenRoutePreview() {
+    ATRealtimeWidgetTheme {
+        DepartureScreen(
+            state = DepartureUiState.Loaded(
+                DepartureBoard(
+                    stopName = "Mangere College",
+                    rows = listOf(
+                        DepartureRow("08:14", "ONEHUNGA", "on time", route = "38"),
+                        DepartureRow("08:29", "ONEHUNGA", "2 min late", route = "38"),
+                        DepartureRow("08:44", "ONEHUNGA", "scheduled (no live data)", route = "38")
                     )
                 )
             )
