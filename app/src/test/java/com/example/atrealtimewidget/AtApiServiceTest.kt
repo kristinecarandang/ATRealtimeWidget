@@ -61,4 +61,51 @@ class AtApiServiceTest {
         val result = Gson().fromJson(json, StopTripsResponse::class.java)
         assertEquals("9503-bcf68071", result.data[0].attributes.stopId)
     }
+
+    // Real "Route by id" response for route 38.
+    private val routeJson = """
+        {"data":{"type":"route","id":"38-203","attributes":{"agency_id":"RTH","route_id":"38-203","route_long_name":"38","route_short_name":"38","route_type":3}}}
+    """.trimIndent()
+
+    @Test
+    fun `route JSON gives short name and type`() {
+        val result = Gson().fromJson(routeJson, RouteResponse::class.java)
+        assertEquals("38", result.data.attributes.routeShortName)
+        assertEquals(3, result.data.attributes.routeType)
+    }
+
+    @Test
+    fun `route without route_short_name gives no short name`() {
+        val json = routeJson.replace("\"route_short_name\":\"38\",", "")
+        val result = Gson().fromJson(json, RouteResponse::class.java)
+        assertNull(result.data.attributes.routeShortName)
+    }
+
+    @Test
+    fun `route without route_type gives no type`() {
+        val json = routeJson.replace(",\"route_type\":3", "")
+        val result = Gson().fromJson(json, RouteResponse::class.java)
+        assertNull(result.data.attributes.routeType)
+    }
+
+    @Test
+    fun `bus stop without platform_code gives no platform`() {
+        // Real Mangere College stop, wrapped like a "Stop by id" response.
+        val json = """
+            {"data":{"type":"stop","id":"2419-9c55e172","attributes":{"location_type":0,"stop_code":"2419","stop_id":"2419-9c55e172","stop_lat":-36.95938,"stop_lon":174.79171,"stop_name":"Mangere College","vehicle_type":3,"wheelchair_boarding":0}}}
+        """.trimIndent()
+        val result = Gson().fromJson(json, StopResponse::class.java)
+        assertEquals("Mangere College", result.data.attributes.stopName)
+        assertNull(result.data.attributes.platformCode)
+    }
+
+    @Test
+    fun `bus stoptrip keeps its route_id and headsign`() {
+        val json = """
+            {"data":[{"type":"stoptrip","id":"stop:2419-9c55e172_trip:1396-03811-27900-2-755db413","attributes":{"arrival_time":"08:14:00","departure_time":"08:14:00","direction_id":0,"drop_off_type":0,"pickup_type":0,"route_id":"38-203","service_date":"2026-11-04","shape_id":"1396-03811-c51751bc","stop_headsign":"ONEHUNGA","stop_id":"2419-9c55e172","stop_sequence":18,"trip_headsign":"Airport to Onehunga via Mangere Town Centre","trip_id":"1396-03811-27900-2-755db413","trip_start_time":"07:45:00"}}]}
+        """.trimIndent()
+        val result = Gson().fromJson(json, StopTripsResponse::class.java)
+        assertEquals("38-203", result.data[0].attributes.routeId)
+        assertEquals("ONEHUNGA", result.data[0].attributes.stopHeadsign)
+    }
 }

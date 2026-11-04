@@ -49,12 +49,22 @@ suspend fun loadDepartureBoard(stopId: String): DepartureBoard? {
             ).data.attributes.platformCode
         }
 
+        step = "route lookup"
+        val routes = routeLabelsByRoute(next) { routeId ->
+            AtApiClient.service.getRoute(
+                routeId = routeId,
+                apiKey = BuildConfig.AT_API_KEY
+            ).data.attributes
+        }
+
         val board = DepartureBoard(
             stopName = stop.data.attributes.stopName,
-            rows = next.map { toDepartureRow(it, live[it.tripId], platforms[it.stopId]) }
+            rows = next.map {
+                toDepartureRow(it, live[it.tripId], platforms[it.stopId], routes[it.routeId])
+            }
         )
         board.rows.forEach {
-            Log.d(TAG, "Departs ${it.time} to ${it.destination}: ${it.status} ${platformLabel(it.platform)}")
+            Log.d(TAG, "Departs: ${departureText(it)} ${platformLabel(it.platform)}")
         }
         board
     } catch (e: Exception) {

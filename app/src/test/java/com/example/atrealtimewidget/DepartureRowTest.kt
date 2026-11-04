@@ -90,4 +90,30 @@ class DepartureRowTest {
     fun platformLabel_noPlatform_isEmpty() {
         assertEquals("", platformLabel(null))
     }
+
+    @Test
+    fun toDepartureRow_withRoute_keepsIt() {
+        val row = toDepartureRow(trip(), null, null, "38")
+        assertEquals("38", row.route)
+    }
+
+    @Test
+    fun toDepartureRow_noRoute_isNull() {
+        val row = toDepartureRow(trip(), null, "1")
+        assertNull(row.route)
+    }
+
+    @Test
+    fun departureText_withRoute_putsRouteAfterTime() {
+        val row = DepartureRow("08:14", "ONEHUNGA", "on time", route = "38")
+        assertEquals("08:14   38   ONEHUNGA   on time", departureText(row))
+    }
+
+    @Test
+    fun departureText_noRoute_isSameAsBefore() {
+        val row = DepartureRow("14:37", "Henderson via Grafton", "2 min late", "1")
+        // The text the screen built before route labels were added.
+        val before = "${row.time}   ${row.destination}   ${row.status}"
+        assertEquals(before, departureText(row))
+    }
 }

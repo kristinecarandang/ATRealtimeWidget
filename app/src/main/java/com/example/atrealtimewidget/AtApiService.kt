@@ -26,6 +26,12 @@ interface AtApiService {
         @Query("tripid", encoded = true) tripIds: String,
         @Header("Ocp-Apim-Subscription-Key") apiKey: String
     ): TripUpdatesResponse
+
+    @GET("gtfs/v3/routes/{routeId}")
+    suspend fun getRoute(
+        @Path("routeId") routeId: String,
+        @Header("Ocp-Apim-Subscription-Key") apiKey: String
+    ): RouteResponse
 }
 
 data class StopAttributes(
@@ -94,3 +100,19 @@ data class TripInfo(
 data class StopTimeUpdate(val departure: StopTimeEvent?)
 
 data class StopTimeEvent(val delay: Int?)
+
+data class RouteResponse(val data: RouteData)
+
+data class RouteData(
+    val type: String,
+    val id: String,
+    val attributes: RouteAttributes
+)
+
+// AT leaves out empty fields, so both of these may be missing.
+data class RouteAttributes(
+    // The route number riders see, e.g. "38".
+    @SerializedName("route_short_name") val routeShortName: String? = null,
+    // The kind of vehicle, as a GTFS number (e.g. 2 = rail, 3 = bus).
+    @SerializedName("route_type") val routeType: Int? = null
+)
